@@ -1,0 +1,9 @@
+name: testapi
+version: 1.0
+main: ru.cod331n.Main
+author: cod331n
+description: My custom plugin for Minecraft 1.12.2
+
+commands:
+  menu:
+    description: "open the menu"
