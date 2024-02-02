@@ -17,8 +17,6 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         getCommand("menu").setExecutor(new MenuCommand());
-        System.out.println(Bukkit.getCommandAliases());
-        System.out.println("Menus started working");
     }
 
     @Override

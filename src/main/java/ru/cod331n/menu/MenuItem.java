@@ -22,7 +22,8 @@ public class MenuItem {
     @NonNull
     private ItemStack icon;
     // Canceled by default
-    private ClickListener clickListener = new ClickListener(event -> event.setCancelled(true));
+    private ClickListener clickListener = new ClickListener(event -> event.setCancelled(true),0);
+
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
         Bukkit.getPluginManager().registerEvents(this.clickListener, Main.plugin);

@@ -13,9 +13,14 @@ import java.util.function.Consumer;
 public class ClickListener implements Listener {
 
     private Consumer<InventoryClickEvent> consumer;
+    private int slotId;
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        consumer.accept(event);
+        if (event.getSlot() == slotId) {
+            consumer.accept(event);
+        } else {
+            event.setCancelled(true);
+        }
     }
 }

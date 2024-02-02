@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -40,17 +41,14 @@ public class Menu implements ButtonObservable {
     private MenuInterface menuInterface;
     private Inventory inventory;
 
-    public Menu(@NonNull Set<? extends Player> menuHolders, @Nullable Menu menuAfter, @Nullable Menu menuBefore, @NonNull String name, @NonNull String title, @NonNull InventoryType inventoryType, @NonNull MenuInterface menuInterface) {
+    public Menu(@NonNull Set<? extends Player> menuHolders, @NonNull String name, @NonNull String title, @NonNull InventoryType inventoryType, @NonNull MenuInterface menuInterface) {
         this.menuHolders = menuHolders;
-        this.menuAfter = menuAfter;
-        this.menuBefore = menuBefore;
         this.name = name;
         this.title = title;
         this.inventoryType = inventoryType;
         this.menuInterface = menuInterface;
 
         createInventory();
-        registerListeners();
     }
 
     public MenuItem getButtonByName(String name) {
@@ -58,6 +56,16 @@ public class Menu implements ButtonObservable {
                 .filter(button -> button.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Button '" + name + "' not found in menu '" + this.name + "'"));
+    }
+
+    public int getButtonSlotIdByName(String name) {
+        for (Map.Entry<Integer, MenuItem> entry : menuInterface.getButtons().entrySet()) {
+            if (name.equals(entry.getValue().getName())) {
+                return entry.getKey();
+            }
+        }
+
+        throw new NoSuchElementException("Button doesn't have a slot id. Check if button name '" + name + "' is correct");
     }
 
     public MenuItem getButtonBySlotId(int slotId) {
@@ -69,11 +77,15 @@ public class Menu implements ButtonObservable {
     }
 
     @Override
-    public void registerListeners() {
-        for (MenuItem menuItem : menuInterface.getButtons().values()) {
-            ClickListener clickListener = menuItem.getClickListener();
-            Bukkit.getPluginManager().registerEvents(clickListener, Main.plugin);
-        }
+    public void registerListener(ClickListener clickListener) {
+        Bukkit.getPluginManager().registerEvents(clickListener, Main.plugin);
+    }
+
+    @Override
+    public void unregisterListener(ClickListener clickListener) {
+        System.out.println(HandlerList.getHandlerLists());
+        System.out.println("MY CLICK EVENT:  " + clickListener);
+        HandlerList.unregisterAll(clickListener);
     }
 
     @Override
