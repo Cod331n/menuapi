@@ -12,11 +12,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class ImplMenuService implements MenuService {
+    private final ServiceHelper serviceHelper = new ServiceHelper();
 
     @Override
     public Menu load(Menu menu) {
-        renderButtons(menu);
-        registerMenuListeners(menu);
+        serviceHelper.renderButtons(menu);
+        serviceHelper.registerMenuListeners(menu);
 
         menu.getMenuHolders().forEach(holder -> holder.openInventory(menu.getInventory()));
         return menu;
@@ -24,7 +25,7 @@ public class ImplMenuService implements MenuService {
 
     @Override
     public void unload(Menu menu) {
-        unregisterMenuListeners(menu);
+        serviceHelper.unregisterMenuListeners(menu);
     }
 
     @Override
@@ -52,36 +53,5 @@ public class ImplMenuService implements MenuService {
         }
 
         throw new NoSuchElementException("menu " + menu.getName() + " doesn't have the menu before it");
-    }
-
-    private void registerMenuListeners(Menu menu) {
-        for (MenuItem menuItem : menu.getMenuInterface().getButtons().values()) {
-            menu.registerListener(menuItem.getClickListener());
-        }
-    }
-
-    private void unregisterMenuListeners(Menu menu) {
-        for (MenuItem menuItem : menu.getMenuInterface().getButtons().values()) {
-            menu.unregisterListener(menuItem.getClickListener());
-        }
-    }
-
-    private void renderButtons(Menu menu) {
-        menu.getMenuInterface().getButtons().forEach((slotId, button) -> {
-            menu.getMenuInterface()
-                    .getButtons()
-                    .values()
-                    .forEach(btn -> btn.getIcon()
-                            .setItemMeta(fillOutItemMeta(btn.getIcon(), btn.getName(), btn.getNameColor(), btn.getLoreLines())));
-            menu.getInventory().setItem(slotId, button.getIcon());
-        });
-    }
-
-    private ItemMeta fillOutItemMeta(ItemStack item, String name, String nameColor, List<String> loreLines) {
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ColorUtil.withColor(nameColor + name));
-        loreLines.forEach(line -> loreLines.set(loreLines.indexOf(line), ColorUtil.withColor(line)));
-        meta.setLore(loreLines);
-        return meta;
     }
 }

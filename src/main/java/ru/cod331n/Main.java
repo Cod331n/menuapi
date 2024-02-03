@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.cod331n.command.MenuCommand;
 import ru.cod331n.service.ImplMenuService;
 import ru.cod331n.service.MenuService;
+import ru.cod331n.service.ServiceHelper;
 
 @Getter
 public class Main extends JavaPlugin {
